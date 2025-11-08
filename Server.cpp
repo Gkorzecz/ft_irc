@@ -73,7 +73,6 @@ bool Server::eventLoop(void)
     return (true);
 }
 
-
 /* Construct the structure pollfd and map that poll() will take as argument.
 */
 int Server::buildPollfds(struct pollfd *pfds, int *map)
@@ -104,12 +103,12 @@ void Server::acceptClient()
     int fd = accept(_Socket_fd, NULL, NULL);
     if (fd == -1)
         return;
-    for (int i = 0; i < MAX_CLIENTS; i++)
+    for (int idx = 0; idx < MAX_CLIENTS; idx++)
     {
-        if (_clients[i] == -1)
+        if (_clients[idx] == -1)
         {   
-            _clients[i] = fd;
-            std::cout << "New client connected at slot : " << i << std::endl;
+            _clients[idx] = fd;
+            std::cout << "New client connected at slot : " << idx << std::endl;
             return;
         }
     }
@@ -125,7 +124,8 @@ void Server::relay(int idx)
     if (n <= 0)
     {   
         close(_clients[idx]); 
-        _clients[idx] = -1; 
+        _clients[idx] = -1;
+        std::cout << "Client disconnected at slot : " << idx << std::endl;
         return ;
     }
     for (int i = 0; i < MAX_CLIENTS; ++i)
