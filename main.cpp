@@ -1,12 +1,19 @@
-#include <iostream>
+#include "Server.hpp"
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc != 2)
     {
-        std::cout << "usage : ./ircserv <port> <password>\n";
+        std::cout << "usage: /ircserver [port]\n";
         return (0);
     }
-    (void) argv;
+    int PortNumber = std::atoi(argv[1]);
+    Server srv(PortNumber);
+    if (!srv.start())
+    {
+        std::cout << "server error\n";
+        return (0);
+    }
+    // catch (const exception &e)
     return (0);
 }
