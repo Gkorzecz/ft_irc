@@ -30,4 +30,3 @@ class Server
         void    acceptClient(void);
         void    relay(int idx);
 };
-

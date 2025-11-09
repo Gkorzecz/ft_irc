@@ -1,0 +1,13 @@
+TO-DO list ft_irc project :
+
+1- Creation of README.md : what to put in it ?
+
+2- Design Client Class :
+    - What does it contain ? (address, IP....)
+    - Should it be a dynamic array ? (versus fixed size already declared)
+    - is it a member of Server ? (probably)
+
+3- use of setsockopt() : free the port used for the server
+(as for now you should wait for a few minutes before reusing it -> kernel wait for packages)
+
+4- Design of throw -> try/catch instead of classic error printing (usage of errno ?)
