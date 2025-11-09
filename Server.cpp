@@ -47,10 +47,10 @@ bool Server::createListeningSocket(void)
 }
 
 /* int poll(struct pollfd fds[], nfds_t nfds, int timeout);
-Take an array of fd's, num ber of fd's, timeout = -1 for infinite wait.
+Take an array of fd's, number of fd's, timeout = -1 for infinite wait.
 Check for POLLIN "events"
-if it's the listening socket -> a new client is trying to connect, accept it.
-if it's a client -> it's trying to send data, so relay it.*/
+if it's from the listening socket -> a new client is trying to connect, accept it.
+if it's from a client -> it's trying to send data, so relay it.*/
 bool Server::eventLoop(void)
 {
     struct pollfd pfds[MAX_CLIENTS + 1];
@@ -116,7 +116,8 @@ void Server::acceptClient()
 }
 
 /* Transmit to every client what's send to the server.
-Uncomment to supress echo. (client sending to himself, for testing now)*/
+Uncomment to supress echo. (client sending to himself, for testing now)
+Also close clients if it can't recieve anything (disconnected).*/
 void Server::relay(int idx)
 {
     char buffer[MAX_MSG_LENGHT];
