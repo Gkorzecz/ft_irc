@@ -34,6 +34,8 @@ bool Server::createListeningSocket(void)
     _Socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (_Socket_fd == -1)
         return (false);
+    int opt = 1;
+    setsockopt(_listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     struct sockaddr_in serverAddress;
     std::memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
