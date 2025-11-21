@@ -9,7 +9,7 @@ TO-DO list ft_irc project :
 
 4- Design of throw -> try/catch instead of classic error printing (usage of errno ?)
 
-Workflow github :
+Workflow github remote :
 
     git checkout -b branch_name
     ...
@@ -17,8 +17,12 @@ Workflow github :
     ...
     git add --all
     git commit -m "commit_message"
+    git push -u origin branch_name
+    ...
+    [ [ open pull request then merge on github ]]
+    ...
     git checkout main
     git pull
-    git merge parser-fix
-    git push
-    git branch -d branch_name 
+    git branch -d branch_name
+    git push origin --delete branch_name
+
