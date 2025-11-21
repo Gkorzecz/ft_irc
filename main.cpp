@@ -2,18 +2,20 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2)
+    try
     {
-        std::cout << "usage: /ircserver [port]\n";
-        return (0);
+        if (argc != 2)
+        {
+            std::cout << "usage: /ircserver [port]\n";
+            return (1);
+        }
+        int PortNumber = std::atoi(argv[1]);
+        Server srv(PortNumber);
+        srv.start();
     }
-    int PortNumber = std::atoi(argv[1]);
-    Server srv(PortNumber);
-    if (!srv.start())
+    catch (std::exception &e)
     {
-        std::cout << "server error\n";
-        return (0);
+        std::cout << e.what() << std::endl;
+        return (1);
     }
-    // catch (const exception &e)
-    return (0);
 }

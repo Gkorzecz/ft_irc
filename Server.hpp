@@ -21,12 +21,30 @@ class Server
     public :
         Server(int port);
         ~Server();
-        bool start(void);
+        void start(void);
         
     private :
-        bool    createListeningSocket(void);
-        bool    eventLoop(void);
+        void    createListeningSocket(void);
+        void    eventLoop(void);
         int     buildPollfds(struct pollfd *pfds, int *map);
         void    acceptClient(void);
         void    relay(int idx);
+
+    class SocketException : public std::exception
+    {
+    public:
+        const char* what() const throw();
+    };
+
+    class BindException : public std::exception
+    {
+    public:
+        const char* what() const throw();
+    };
+
+    class ListenException : public std::exception
+    {
+    public:
+        const char* what() const throw();
+    };
 };
