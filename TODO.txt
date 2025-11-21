@@ -7,7 +7,18 @@ TO-DO list ft_irc project :
     - Should it be a dynamic array ? (versus fixed size already declared)
     - is it a member of Server ? (probably)
 
-3- use of setsockopt() : free the port used for the server
-(as for now you should wait for a few minutes before reusing it -> kernel wait for packages)
-
 4- Design of throw -> try/catch instead of classic error printing (usage of errno ?)
+
+Workflow github :
+
+    git checkout -b branch_name
+    ...
+    [ [ edit ] ]
+    ...
+    git add --all
+    git commit -m "commit_message"
+    git checkout main
+    git pull
+    git merge parser-fix
+    git push
+    git branch -d branch_name 
