@@ -14,14 +14,22 @@ Server::~Server()
     {
         if (_clients[i] != -1)
             close(_clients[i]);
-        if (_Socket_fd != -1)
-            close(_Socket_fd);
-    } 
+    }
+    if (_Socket_fd != -1)
+        close(_Socket_fd); 
 }
 
-bool Server::start(void)
+void Server::start(void)
 {
-    return (createListeningSocket() && eventLoop());
+    try
+    {
+        createListeningSocket();
+        eventLoop();
+    }
+    catch (std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 /* Basic socket initialisation :
@@ -29,23 +37,22 @@ bool Server::start(void)
     - Bind the socket to an address and port using bind().
     - Listen for incoming connections with listen().
 - socket() : AF_INET : IPv4 protocol | SOCK_STREAM: TCP socket */
-bool Server::createListeningSocket(void)
+void Server::createListeningSocket(void)
 {
     _Socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (_Socket_fd == -1)
-        return (false);
+        throw SocketException();
     int opt = 1;
-    setsockopt(_listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(_Socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     struct sockaddr_in serverAddress;
     std::memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = INADDR_ANY;
     serverAddress.sin_port = htons(_port);
     if (bind(_Socket_fd, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
-        return (false);
+        throw BindException();
     if (listen(_Socket_fd, MAX_CLIENTS) == -1)
-        return (false);
-    return (true);
+        throw ListenException();
 }
 
 /* int poll(struct pollfd fds[], nfds_t nfds, int timeout);
@@ -53,7 +60,7 @@ Take an array of fd's, number of fd's, timeout = -1 for infinite wait.
 Check for POLLIN "events"
 if it's from the listening socket -> a new client is trying to connect, accept it.
 if it's from a client -> it's trying to send data, so relay it.*/
-bool Server::eventLoop(void)
+void Server::eventLoop(void)
 {
     struct pollfd pfds[MAX_CLIENTS + 1];
     int map[MAX_CLIENTS + 1];
@@ -72,7 +79,6 @@ bool Server::eventLoop(void)
                 relay(map[i]);
         }
     }
-    return (true);
 }
 
 /* Construct the structure pollfd and map that poll() will take as argument.
@@ -136,4 +142,19 @@ void Server::relay(int idx)
         // if (_clients[i] != -1 && i != idx) 
             send(_clients[i], buffer, n, 0);
     }
+}
+
+const char* Server::SocketException::what() const throw()
+{
+    return ("Error creating socket");
+}
+
+const char* Server::BindException::what() const throw()
+{
+    return ("Error binding socket");
+}
+
+const char* Server::ListenException::what() const throw()
+{
+    return ("Error listening to socket");
 }
